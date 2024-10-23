@@ -20,13 +20,14 @@ total max production cost = 12000 + 6000 = 18000 still lower than limit 20000
 with these specific constraints production limit can be ignored
 */
 
-const optimumWidgetAmt = () => {
+const solveProblem2 = () => {
     const premiumWidgetAmt = calculateMaxProduct({ maxProduction: 150, nettProfit: 100, maxBeforeDiminish: 50, diminishRate: 1})
-    const standardWidgetAmt = calculateMaxProduct({ maxProduction: 200, nettProfit: 50, maxBeforeDiminish: 100, diminishRate: 0.5})
+    const standardWidgetAmt = calculateMaxProduct({ maxProduction: 200, nettProfit: 50, maxBeforeDiminish: 100, diminishRate: 0.5})    
 
-    const optimumAmt = premiumWidgetAmt + standardWidgetAmt
+    console.log('optimum premium widget amount : ', premiumWidgetAmt)
+    console.log('optimum standard widget amount : ', standardWidgetAmt)    
     
-    return optimumAmt
+    return { premiumWidget: premiumWidgetAmt, standardWidget: standardWidgetAmt }
 }
 
-console.log(optimumWidgetAmt())
+solveProblem2()
