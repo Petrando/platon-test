@@ -1,10 +1,6 @@
-const constraintsAB = {
-    aMin: 5, aMax: 15, bMin: 10, bMax: 20
-}
+import { constraints, constraintsAB } from "./constants"
 
-const constraints = { aConst: 5, bConst: 4, total: 100 }
-
-const countPairFromAMax = () => {
+const getMaxPairs = () => {
     const { aMin, aMax, bMin, bMax } = constraintsAB
 
     const pairs = []
@@ -33,37 +29,9 @@ const countPairFromAMax = () => {
     return pairs
 }
 
-const countPairFromBMax = () => {
-    const { aMin, aMax, bMin, bMax } = constraintsAB
-
-    const pairs = []
-    let b = bMax
-    let maxTotal = 0     
-    while(b >= bMin){
-        let a = aMax
-        while(a >= aMin){
-            const inConstraints = inTotalConstraints(a, b)            
-            if(inConstraints){
-                let newTotal = a + b
-                if(newTotal >= maxTotal){
-                    if(newTotal > maxTotal){
-                        pairs.length = 0
-                        maxTotal = newTotal
-                    }                    
-                    pairs.push({a, b})                    
-                }
-            }            
-            a--
-        }
-        b--
-    }
-
-    return pairs
-}
-
 const inTotalConstraints = (a, b) => {
-    const { aConst, bConst, total } = constraints
-    const totalAB = (a * aConst) + (b * bConst)
+    const { aCost, bCost, total } = constraints
+    const totalAB = (a * aCost) + (b * bCost)
     
     if( totalAB <= total ){
         return true
@@ -78,11 +46,11 @@ const inTotalConstraints = (a, b) => {
 */
 
 const maximizeTeamPerson = () => {
-    const aMaxPair = countPairFromAMax()
-    const bMaxPair = countPairFromBMax()
+    const maxPairs = getMaxPairs()    
 
-    console.log(aMaxPair)
-    console.log(bMaxPair)
+    console.log(maxPairs)
+    const salaries = maxPairs.map(d => ({a:d.a, b:d.b, salary:(5000 * d.a) + (4000 * d.b)}))
+    console.log(salaries)
 }
 
 maximizeTeamPerson()
