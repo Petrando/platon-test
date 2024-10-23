@@ -67,13 +67,14 @@ const maxWeeklyProfit = () => {
 
     const allPoints = [mixPoints].concat(laborHourPoints).concat(machineHourPoints)
     
-    const maxProfit = allPoints.reduce((acc, curr) => {
+    const maxProfit = allPoints.reduce((acc, curr, i) => {
         const profit = calculateProfit(curr)
         
-        return profit > acc?profit:acc
-    }, 0)
+        return profit > acc.profit?{ profit, idx: i }:acc
+    }, { profit:0, idx: -1 })
 
-    return maxProfit
+    const maxPoint = allPoints[maxProfit.idx]
+    return {...maxPoint, profit: calculateProfit(maxPoint)}
 }
 
 const calculateProfit = ({A, B}) => {
@@ -123,13 +124,13 @@ const solveEquations = ({
     const x = (c1 * b2 - c2 * b1) / determinant;
     const y = (a1 * c2 - a2 * c1) / determinant;
 
-    console.log('below hour limit? : ', belowHourLimit(Math.ceil(x), Math.ceil(y)))
+    //console.log('below hour limit? : ', belowHourLimit(Math.ceil(x), Math.ceil(y)))
 
     if(x > Alimit || y > Blimit){
         return null
     }
     
-    return { A:x, B:y };
+    return { A:Math.ceil(x), B:Math.ceil(y) };
 }
 
 const belowHourLimit = ({A, B}) => {
