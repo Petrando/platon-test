@@ -1,3 +1,6 @@
+const hourLimits = {
+    labor: 160, machine: 180
+}
 
 const maxWeeklyProfit = () => {
     /*
@@ -33,7 +36,7 @@ const maxWeeklyProfit = () => {
     The points that meet the weekly limit constraint will be used
     */
 
-    const laborHourPoints = zerofyFactor({ A: 2, B: 1, total: 160, Alimit: 80, Blimit: 100})
+    const laborHourPoints = zerofyFactor({ A: 2, B: 1, totalHours: hourLimits.labor, Alimit: 80, Blimit: 100})
 
     /*
     Next is machine hours equation : A + 2B <= 180
@@ -51,14 +54,14 @@ const maxWeeklyProfit = () => {
     The points that meet the weekly limit constraint will be used
     */
     
-    const machineHourPoints = zerofyFactor({ A: 1, B: 2, total: 180, Alimit: 80, Blimit: 100})
+    const machineHourPoints = zerofyFactor({ A: 1, B: 2, totalHours: hourLimits.machine, Alimit: 80, Blimit: 100})
 
     const mixPoints = solveEquations({
         firstEq: {
-            A: 2, B: 1, total: 160
+            A: 2, B: 1, totalHours: hourLimits.labor
         },
         secondEq: {
-            A: 1, B: 2, total: 180
+            A: 1, B: 2, totalHours: hourLimits.machine
         },
         Alimit: 80, Blimit: 100})
 
@@ -78,11 +81,11 @@ const calculateProfit = ({A, B}) => {
 }
 
 const zerofyFactor = (AB) => {
-    const { A, B, total, Alimit, Blimit } = AB
+    const { A, B, totalHours, Alimit, Blimit } = AB
     //if A is 0
-    const b = total/B
+    const b = totalHours/B
     //if B is 0....
-    const a = total/A
+    const a = totalHours/A
 
     const points = []
     if(b <= Blimit){
@@ -98,16 +101,16 @@ const zerofyFactor = (AB) => {
 
 const solveEquations = ({
     firstEq:{
-        A, B, total
+        A, B, totalHours
     },
     secondEq:{
-        A: A2, B: B2, total: total2
+        A: A2, B: B2, totalHours: totalHours2
     }, 
     Alimit, Blimit
 }) => {
     // Coefficients from the equations
-    const a1 = A, b1 = B, c1 = total; // 2x + y = 160
-    const a2 = A2, b2 = B2, c2 = total2; // x + 2y = 180
+    const a1 = A, b1 = B, c1 = totalHours; // 2x + y = 160
+    const a2 = A2, b2 = B2, c2 = totalHours2; // x + 2y = 180
 
     // Calculate the determinant
     const determinant = a1 * b2 - a2 * b1;
@@ -120,11 +123,23 @@ const solveEquations = ({
     const x = (c1 * b2 - c2 * b1) / determinant;
     const y = (a1 * c2 - a2 * c1) / determinant;
 
+    console.log('below hour limit? : ', belowHourLimit(Math.ceil(x), Math.ceil(y)))
+
     if(x > Alimit || y > Blimit){
         return null
     }
     
     return { A:x, B:y };
+}
+
+const belowHourLimit = ({A, B}) => {
+    const laborHour = (2 * A) + B
+    const machineHour = A + (2 * B)
+    
+    if(laborHour > hourLimits.labor || machineHour > hourLimits.machine){
+        return false
+    }
+    return true
 }
 
 console.log(maxWeeklyProfit())
