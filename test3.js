@@ -1,3 +1,4 @@
+
 import { constraints, constraintsAB } from "./constants"
 
 const getMaxPairs = () => {
@@ -45,15 +46,21 @@ const inTotalConstraints = (a, b) => {
     5A + 4B <= 100
 */
 
-const maximizeTeamPerson = () => {
+const optimalTeam = () => {
     const maxPairs = getMaxPairs()    
-
-    console.log(maxPairs)
+    
     const salaries = maxPairs.map(d => ({a:d.a, b:d.b, salary:(5000 * d.a) + (4000 * d.b)}))
-    console.log(salaries)
-}
+    
+    const minSalaryIdx = salaries.reduce((acc, curr, idx) => {
+        if(curr.salary < acc.salary){
+            return { salary: acc.salary, idx }
+        }
 
-maximizeTeamPerson()
+        return acc
+    }, { salary: Number.MAX_SAFE_INTEGER, idx: -1})
+
+    return salaries[minSalaryIdx.idx]
+}
 
 const calculateMaxProfit = ({
     nettProfit, maxBeforeDiminish, diminishRate
@@ -67,15 +74,22 @@ const calculateMaxProfit = ({
 
         diminishingProduct += 1
     }
-
-    console.log('After while diminishingProfit : ', diminishingProfit, ' diminishRate : ', diminishRate)
-    console.log('total diminishingProduct : ', diminishingProduct)
+    
     return totalDiminishingProfit + (maxBeforeDiminish * nettProfit)
 
 }
 
-console.log('Team A : ', calculateMaxProfit({ nettProfit: 120, maxBeforeDiminish: 40, diminishRate: 2}))
-console.log('Team B : ', calculateMaxProfit({ nettProfit: 60, maxBeforeDiminish: 80, diminishRate: 1}))
+const solveProblem3 = () => {
+    const teamCombo = optimalTeam()
+    
+    const teamAProfit = calculateMaxProfit({ nettProfit: 120, maxBeforeDiminish: 40, diminishRate: 2})
+    const teamBProfit = calculateMaxProfit({ nettProfit: 60, maxBeforeDiminish: 80, diminishRate: 1})
+
+    return { teamAProfit, teamBProfit, teamCombo}
+
+}
+
+solveProblem3()
 
 
 
